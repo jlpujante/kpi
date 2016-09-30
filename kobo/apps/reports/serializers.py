@@ -24,10 +24,11 @@ class ReportsDetailSerializer(serializers.BaseSerializer):
 
         split_by = request.query_params.get('split_by', None)
 
-        _list = report_data.data_by_identifiers(obj, vnames, split_by=split_by)
+        _report_data = report_data.data_by_identifiers(obj, vnames, split_by=split_by)
+        _stats = _report_data['stats']
 
         return {
             'url': reverse('reports-detail', args=(obj.uid,), request=request),
-            'count': len(_list),
-            'list': _list,
+            'count': len(_stats),
+            'list': _stats,
         }

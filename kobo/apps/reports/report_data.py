@@ -94,9 +94,12 @@ def data_by_identifiers(asset, field_names=None, submission_stream=None,
             'style': specified_styles.get(identifier, {}),
         }
 
-    return [_package_stat(*stat_tup, split_by=split_by) for
+    stats = [_package_stat(*stat_tup, split_by=split_by) for
             stat_tup in report.get_stats(submission_stream,
                                          fields=field_names,
                                          lang=lang,
                                          split_by=split_by)
     ]
+    return {
+        'stats': stats,
+    }

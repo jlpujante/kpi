@@ -109,15 +109,15 @@ class MockDataReports(TestCase):
                           "Decimal", "Date", "Time", "Date_and_time", "GPS",
                           "Photo", "Audio", "Video", "Barcode", "Acknowledge",
                           "calculation", "start", "end"]
-        self.assertEqual([v['name'] for v in values], expected_names)
-        self.assertEqual(len(values), 17)
+        self.assertEqual([v['name'] for v in values['stats']], expected_names)
+        self.assertEqual(len(values['stats']), 17)
 
     def test_kobo_apps_reports_report_data_split_by(self):
         values = report_data.data_by_identifiers(self.asset,
                                           split_by="Select_one",
                                           field_names=["Date"],
                                           submission_stream=self.submissions)
-        self.assertEqual(values[0]['data']['values'], [
+        self.assertEqual(values['stats'][0]['data']['values'], [
                 (u'2016-06-01',
                   {u'responses': (u'First option', u'Second option'),
                    u'frequencies': (1,             0),
@@ -143,7 +143,7 @@ class MockDataReports(TestCase):
                                                  field_names=["Date"],
                                                  submission_stream=self.submissions)
         responses = set()
-        for rv in OrderedDict(values[0]['data']['values']).values():
+        for rv in OrderedDict(values['stats'][0]['data']['values']).values():
             responses.update(rv.get('responses'))
         expected = set([u'\u0627\u0644\u062e\u064a\u0627\u0631 \u0627\u0644\u0623\u0648\u0644',
                              u'\u0627\u0644\u062e\u064a\u0627\u0631 \u0627\u0644\u062b\u0627\u0646\u064a'])
@@ -153,17 +153,17 @@ class MockDataReports(TestCase):
         values = report_data.data_by_identifiers(self.asset,
                                                  field_names=('Select_one',),
                                                  submission_stream=self.submissions)
-        self.assertEqual(values[0]['data']['frequencies'], (3, 1))
-        self.assertEqual(values[0]['row']['type'], 'select_one')
-        self.assertEqual(values[0]['data']['percentages'], (75, 25))
-        self.assertEqual(values[0]['data']['responses'], (u'First option', u'Second option'))
+        self.assertEqual(values['stats'][0]['data']['frequencies'], (3, 1))
+        self.assertEqual(values['stats'][0]['row']['type'], 'select_one')
+        self.assertEqual(values['stats'][0]['data']['percentages'], (75, 25))
+        self.assertEqual(values['stats'][0]['data']['responses'], (u'First option', u'Second option'))
 
     def test_kobo_apps_reports_report_data_translation(self):
         values = report_data.data_by_identifiers(self.asset,
                                           lang='Arabic',
                                           field_names=('Select_one',),
                                           submission_stream=self.submissions)
-        self.assertEqual(values[0]['data']['responses'],
+        self.assertEqual(values['stats'][0]['data']['responses'],
                          (  # response 1 in Arabic
                           u'\u0627\u0644\u062e\u064a\u0627\u0631 '
                           u'\u0627\u0644\u0623\u0648\u0644',
@@ -181,7 +181,7 @@ class MockDataReports(TestCase):
                                                  field_names=['Date', 'Decimal'],
                                                  submission_stream=submissions)
 
-        (date_stats, decimal_stats) = values
+        (date_stats, decimal_stats) = values['stats']
         self.assertEqual(date_stats['data'], {
           'provided': 4,
           'total_count': 4,
